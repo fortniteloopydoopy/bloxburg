@@ -1150,6 +1150,7 @@ function Library:Window()
 				return config
 			end
 
+			--// info container
 			function Container:Information(title, desc)
 				local Information = Instance.new("Frame")
 				local InformationCorner = Instance.new("UICorner")
