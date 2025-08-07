@@ -1035,9 +1035,11 @@ function Library:Window()
 					local visibleCount = math.min(#filtered, maxVisibleItems)
 					currentSize = visibleCount * (itemHeight + DropdownListLayout.Padding.Offset)
 
+					-- Add +1 padding at the end to ensure full last item visibility
+					local totalHeight = #filtered * (itemHeight + DropdownListLayout.Padding.Offset) + 1
+
 					DropdownList.Size = UDim2.new(0, 356, 0, currentSize)
-					DropdownList.CanvasSize =
-						UDim2.new(0, 0, 0, #filtered * (itemHeight + DropdownListLayout.Padding.Offset))
+					DropdownList.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
 
 					for _, v in ipairs(filtered) do
 						local Item = Instance.new("TextButton")
