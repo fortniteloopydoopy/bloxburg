@@ -1321,7 +1321,7 @@ function Library:Window()
 				InformationTitle.Position = UDim2.new(0, 0, 0, 4)
 				InformationTitle.Font = Enum.Font.GothamBold
 				InformationTitle.Text = title
-				InformationTitle.TextColor3 = Color3.fromRGB(200, 200, 255)
+				InformationTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 				InformationTitle.TextSize = 14
 				InformationTitle.TextScaled = false
 				InformationTitle.TextWrapped = true
@@ -1334,7 +1334,7 @@ function Library:Window()
 				InformationDesc.Position = UDim2.new(0, 10, 0, 30)
 				InformationDesc.Font = Enum.Font.Gotham
 				InformationDesc.Text = desc
-				InformationDesc.TextColor3 = Color3.fromRGB(180, 180, 255)
+				InformationDesc.TextColor3 = Color3.fromRGB(255, 255, 255)
 				InformationDesc.TextSize = 13
 				InformationDesc.TextWrapped = true
 				InformationDesc.TextXAlignment = Enum.TextXAlignment.Center
