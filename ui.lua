@@ -828,21 +828,26 @@ function Library:Window()
 					SliderIn.Size = UDim2.new((start or 0) / max, 0, 0, 32)
 				end
 
+				local moveconnection
+				local releaseconnection
+
 				SliderTrigger.MouseButton1Down:Connect(function()
 					local Value = math.floor(
 						(((tonumber(max) - tonumber(min)) / 356) * SliderIn.AbsoluteSize.X) + tonumber(min)
 					) or 0
 					callback(Value)
 					SliderIn.Size = UDim2.new(0, math.clamp(mouse.X - SliderIn.AbsolutePosition.X, 0, 356), 0, 32)
-					local moveconnection = mouse.Move:Connect(function()
-						SliderValue.Text = Value
+
+					moveconnection = mouse.Move:Connect(function()
 						Value = math.floor(
 							(((tonumber(max) - tonumber(min)) / 356) * SliderIn.AbsoluteSize.X) + tonumber(min)
 						)
+						SliderValue.Text = Value
 						callback(Value)
 						SliderIn.Size = UDim2.new(0, math.clamp(mouse.X - SliderIn.AbsolutePosition.X, 0, 356), 0, 32)
 					end)
-					local releaseconnection = game.UserInputService.InputEnded:Connect(function(Mouse)
+
+					releaseconnection = game.UserInputService.InputEnded:Connect(function(Mouse)
 						if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
 							Value = math.floor(
 								(((tonumber(max) - tonumber(min)) / 356) * SliderIn.AbsoluteSize.X) + tonumber(min)
@@ -851,6 +856,7 @@ function Library:Window()
 							callback(Value)
 							SliderIn.Size =
 								UDim2.new(0, math.clamp(mouse.X - SliderIn.AbsolutePosition.X, 0, 356), 0, 32)
+
 							moveconnection:Disconnect()
 							releaseconnection:Disconnect()
 						end
