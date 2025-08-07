@@ -1030,74 +1030,60 @@ function Library:Window()
 				DropdownListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 				DropdownListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-				local IsFocused = false
-				local DidChoose = false
+				local dropdownOpen = false
 
 				DropdownValue.Focused:Connect(function()
-					if DidChoose then
+					if dropdownOpen then
 						return
 					end
-					repeat
-						task.wait()
-					until IsFocused ~= nil
-					if not IsFocused then
-						IsFocused = nil
-						DidChoose = true
-						local twnr = true
-						task.spawn(function()
-							Tween(Section, 0.3, { Size = Section.Size + UDim2.new(0, 0, 0, size + 5) })
-							twnr = false
-						end)
-						task.spawn(function()
-							while twnr do
-								Page.CanvasSize = UDim2.new(0, 0, 0, PageList.AbsoluteContentSize.Y)
-								task.wait(0.01)
-							end
-						end)
-						for i, v in next, DropdownList:GetChildren() do
-							if v:IsA("TextButton") then
-								v.Visible = true
-							end
+					dropdownOpen = true
+					IsFocused = true
+
+					for _, v in next, DropdownList:GetChildren() do
+						if v:IsA("TextButton") then
+							v.Visible = true
 						end
-						Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42 + size + 5) })
-						task.wait(0.3)
-						IsFocused = true
+					end
+
+					Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42 + size + 5) })
+					Tween(Section, 0.3, { Size = Section.Size + UDim2.new(0, 0, 0, size + 5) })
+				end)
+
+				DropdownValue.FocusLost:Connect(function()
+					if not dropdownOpen or DidChoose then
+						return
+					end
+					dropdownOpen = false
+					IsFocused = false
+					DidChoose = true
+
+					Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
+					Tween(Section, 0.3, { Size = Section.Size - UDim2.new(0, 0, 0, size + 5) })
+					task.delay(0.3, function()
 						DidChoose = false
-					end
+					end)
 				end)
 
-				DropdownValue:GetPropertyChangedSignal("Text"):Connect(function(prop)
-					prop = DropdownValue.Text
-					if IsFocused == true then
-						if prop == "" then
-							for i, v in next, DropdownList:GetChildren() do
-								if v:IsA("TextButton") then
-									v.Visible = true
-								end
-							end
-						else
-							for i, v in next, DropdownList:GetChildren() do
-								if v:IsA("TextButton") then
-									if string.find(string.lower(v.Text), string.lower(prop)) then
-										v.Visible = true
-									else
-										v.Visible = false
-									end
-								end
+				DropdownValue:GetPropertyChangedSignal("Text"):Connect(function()
+					local prop = DropdownValue.Text
+					if IsFocused then
+						for _, v in next, DropdownList:GetChildren() do
+							if v:IsA("TextButton") then
+								v.Visible = (prop == "") or string.find(string.lower(v.Text), string.lower(prop))
 							end
 						end
 					end
 				end)
 
-				for i, v in next, list do
-					if count <= 3 then
-						size = size + 40 + 1
-						DropdownList.Size = DropdownList.Size + UDim2.new(0, 0, 0, 40 + 1)
-						count = count + 1
-					end
-
+				for _, v in next, list do
 					local Item = Instance.new("TextButton")
 					local ItemCorner = Instance.new("UICorner")
+
+					if count <= 3 then
+						size = size + 41
+						DropdownList.Size = DropdownList.Size + UDim2.new(0, 0, 0, 41)
+						count += 1
+					end
 
 					Item.Name = "Item"
 					Item.Parent = DropdownList
@@ -1110,7 +1096,6 @@ function Library:Window()
 					Item.TextSize = 12.000
 
 					ItemCorner.CornerRadius = UDim.new(0, 8)
-					ItemCorner.Name = "ItemCorner"
 					ItemCorner.Parent = Item
 
 					Item.MouseEnter:Connect(function()
@@ -1124,33 +1109,18 @@ function Library:Window()
 						if DidChoose then
 							return
 						end
-
-						repeat
-							task.wait()
-						until IsFocused ~= nil
-						IsFocused = nil
-						DidChoose = true
 						DropdownValue.Text = v
-						task.spawn(function()
-							callback(v)
-						end)
-						local twnr = true
-						task.spawn(function()
-							Tween(Section, 0.3, { Size = Section.Size - UDim2.new(0, 0, 0, size + 5) })
-							twnr = false
-						end)
-						task.spawn(function()
-							while twnr do
-								Page.CanvasSize = UDim2.new(0, 0, 0, PageList.AbsoluteContentSize.Y)
-								task.wait(0.01)
-							end
-						end)
-						task.spawn(function()
-							Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
-						end)
-						task.wait(0.3)
+						callback(v)
+						dropdownOpen = false
 						IsFocused = false
-						DidChoose = false
+						DidChoose = true
+
+						Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
+						Tween(Section, 0.3, { Size = Section.Size - UDim2.new(0, 0, 0, size + 5) })
+
+						task.delay(0.3, function()
+							DidChoose = false
+						end)
 					end)
 
 					DropdownList.CanvasSize = UDim2.new(0, 0, 0, DropdownListLayout.AbsoluteContentSize.Y)
