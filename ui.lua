@@ -1031,6 +1031,8 @@ function Library:Window()
 				DropdownListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
 				local dropdownOpen = false
+				local IsFocused = false
+				local DidChoose = false
 
 				DropdownValue.Focused:Connect(function()
 					if dropdownOpen then
@@ -1049,19 +1051,31 @@ function Library:Window()
 					Tween(Section, 0.3, { Size = Section.Size + UDim2.new(0, 0, 0, size + 5) })
 				end)
 
-				DropdownValue.FocusLost:Connect(function()
-					if not dropdownOpen or DidChoose then
+				DropdownValue.FocusLost:Connect(function(enterPressed)
+					if not dropdownOpen then
 						return
 					end
-					dropdownOpen = false
-					IsFocused = false
-					DidChoose = true
 
-					Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
-					Tween(Section, 0.3, { Size = Section.Size - UDim2.new(0, 0, 0, size + 5) })
-					task.delay(0.3, function()
-						DidChoose = false
-					end)
+					task.wait(0.05)
+
+					-- If user clicked on an item, don't collapse here — item handler will do it
+					if DidChoose then
+						return
+					end
+
+					if not IsFocused then
+						dropdownOpen = false
+						Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
+						Tween(Section, 0.3, { Size = Section.Size - UDim2.new(0, 0, 0, size + 5) })
+
+						for _, v in next, DropdownList:GetChildren() do
+							if v:IsA("TextButton") then
+								v.Visible = false
+							end
+						end
+					end
+
+					IsFocused = false
 				end)
 
 				DropdownValue:GetPropertyChangedSignal("Text"):Connect(function()
@@ -1106,24 +1120,27 @@ function Library:Window()
 					end)
 
 					Item.MouseButton1Click:Connect(function()
-						if dropdownOpen == false then
-							return
-						end
 						if DidChoose then
 							return
 						end
+
 						DidChoose = true
+						dropdownOpen = false
+						IsFocused = false
 
 						DropdownValue.Text = v
 						callback(v)
 
-						dropdownOpen = false
-						IsFocused = false
-
 						Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
 						Tween(Section, 0.3, { Size = Section.Size - UDim2.new(0, 0, 0, size + 5) })
 
-						task.delay(0.35, function()
+						for _, v in next, DropdownList:GetChildren() do
+							if v:IsA("TextButton") then
+								v.Visible = false
+							end
+						end
+
+						task.delay(0.3, function()
 							DidChoose = false
 						end)
 					end)
@@ -1133,37 +1150,6 @@ function Library:Window()
 
 				Section.Size = Section.Size + UDim2.new(0, 0, 0, 42 + 5)
 				Page.CanvasSize = UDim2.new(0, 0, 0, PageList.AbsoluteContentSize.Y)
-
-				DropdownValue.FocusLost:Connect(function()
-					task.wait(0.1)
-					if DidChoose then
-						return
-					end
-					repeat
-						task.wait()
-					until IsFocused ~= nil
-					if IsFocused then
-						DidChoose = true
-						IsFocused = nil
-						local twnr = true
-						task.spawn(function()
-							Tween(Section, 0.3, { Size = Section.Size - UDim2.new(0, 0, 0, size + 5) })
-							twnr = false
-						end)
-						task.spawn(function()
-							while twnr do
-								Page.CanvasSize = UDim2.new(0, 0, 0, PageList.AbsoluteContentSize.Y)
-								task.wait(0.01)
-							end
-						end)
-						task.spawn(function()
-							Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
-						end)
-						task.wait(0.3)
-						IsFocused = false
-						DidChoose = false
-					end
-				end)
 
 				local config = {}
 
