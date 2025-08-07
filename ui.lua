@@ -872,7 +872,7 @@ function Library:Window()
 				local TextboxCorner = Instance.new("UICorner")
 				local TextboxScaler = Instance.new("Frame")
 				local TextboxValue = Instance.new("TextLabel")
-				local TextboxTrigger = Instance.new("ImageLabel")
+				-- local TextboxTrigger = Instance.new("ImageLabel")
 				local TextboxTyper = Instance.new("TextBox")
 				local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
 
@@ -906,17 +906,17 @@ function Library:Window()
 				TextboxValue.TextWrapped = true
 				TextboxValue.TextXAlignment = Enum.TextXAlignment.Left
 
-				TextboxTrigger.Name = "TextboxTrigger"
-				TextboxTrigger.Parent = TextboxScaler
-				TextboxTrigger.BackgroundTransparency = 1.000
-				TextboxTrigger.LayoutOrder = 4
-				TextboxTrigger.Position = UDim2.new(0.886058927, 0, 0.107142836, 0)
-				TextboxTrigger.Size = UDim2.new(0, 25, 0, 25)
-				TextboxTrigger.ZIndex = 2
-				TextboxTrigger.Image = "rbxassetid://3926305904"
-				TextboxTrigger.ImageColor3 = Color3.fromRGB(255, 255, 255)
-				TextboxTrigger.ImageRectOffset = Vector2.new(924, 364)
-				TextboxTrigger.ImageRectSize = Vector2.new(36, 36)
+				-- TextboxTrigger.Name = "TextboxTrigger"
+				-- TextboxTrigger.Parent = TextboxScaler
+				-- TextboxTrigger.BackgroundTransparency = 1.000
+				-- TextboxTrigger.LayoutOrder = 4
+				-- TextboxTrigger.Position = UDim2.new(0.886058927, 0, 0.107142836, 0)
+				-- TextboxTrigger.Size = UDim2.new(0, 25, 0, 25)
+				-- TextboxTrigger.ZIndex = 2
+				-- TextboxTrigger.Image = "rbxassetid://3926305904"
+				-- TextboxTrigger.ImageColor3 = Color3.fromRGB(255, 255, 255)
+				-- TextboxTrigger.ImageRectOffset = Vector2.new(924, 364)
+				-- TextboxTrigger.ImageRectSize = Vector2.new(36, 36)
 
 				TextboxTyper.Name = "TextboxTyper"
 				TextboxTyper.Parent = TextboxScaler
