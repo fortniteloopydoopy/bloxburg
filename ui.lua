@@ -830,7 +830,7 @@ function Library:Window()
 
 				local moveconnection
 				local releaseconnection
-
+				-- hai
 				SliderTrigger.MouseButton1Down:Connect(function()
 					local Value = math.floor(
 						(((tonumber(max) - tonumber(min)) / 356) * SliderIn.AbsoluteSize.X) + tonumber(min)
