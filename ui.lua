@@ -1108,7 +1108,11 @@ function Library:Window()
 				return config
 			end
 
-			function Container:Information(title, desc)
+			function Container:Information(title, desc, colortitle, colordesc)
+				local function validateColor(color, default)
+					return typeof(color) == "Color3" and color or default
+				end
+
 				local Information = Instance.new("Frame")
 				local InformationCorner = Instance.new("UICorner")
 				local InformationTitle = Instance.new("TextLabel")
@@ -1130,8 +1134,8 @@ function Library:Window()
 				InformationTitle.Size = UDim2.new(1, 0, 0, 24)
 				InformationTitle.Position = UDim2.new(0, 0, 0, 4)
 				InformationTitle.Font = Enum.Font.GothamBold
-				InformationTitle.Text = title
-				InformationTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+				InformationTitle.Text = title or "Title"
+				InformationTitle.TextColor3 = validateColor(colortitle, Color3.fromRGB(255, 255, 255))
 				InformationTitle.TextSize = 14
 				InformationTitle.TextScaled = false
 				InformationTitle.TextWrapped = true
@@ -1142,9 +1146,9 @@ function Library:Window()
 				InformationDesc.BackgroundTransparency = 1
 				InformationDesc.Size = UDim2.new(1, -20, 0, 30)
 				InformationDesc.Position = UDim2.new(0, 10, 0, 30)
-				InformationDesc.Font = Enum.Font.Gotham
-				InformationDesc.Text = desc
-				InformationDesc.TextColor3 = Color3.fromRGB(255, 255, 255)
+				InformationDesc.Font = Enum.Font.GothamBold
+				InformationDesc.Text = desc or "Description"
+				InformationDesc.TextColor3 = validateColor(colordesc, Color3.fromRGB(255, 255, 255))
 				InformationDesc.TextSize = 13
 				InformationDesc.TextWrapped = true
 				InformationDesc.TextXAlignment = Enum.TextXAlignment.Center
