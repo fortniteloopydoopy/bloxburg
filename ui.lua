@@ -1106,19 +1106,24 @@ function Library:Window()
 					end)
 
 					Item.MouseButton1Click:Connect(function()
+						if dropdownOpen == false then
+							return
+						end
 						if DidChoose then
 							return
 						end
+						DidChoose = true
+
 						DropdownValue.Text = v
 						callback(v)
+
 						dropdownOpen = false
 						IsFocused = false
-						DidChoose = true
 
 						Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
 						Tween(Section, 0.3, { Size = Section.Size - UDim2.new(0, 0, 0, size + 5) })
 
-						task.delay(0.3, function()
+						task.delay(0.35, function()
 							DidChoose = false
 						end)
 					end)
