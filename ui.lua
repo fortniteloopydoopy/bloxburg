@@ -1308,8 +1308,7 @@ function Library:Window()
 				Information.Parent = Section
 				Information.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 				Information.ClipsDescendants = true
-				Information.Position = UDim2.new(0.0337500013, 0, 0.658627093, 0)
-				Information.Size = UDim2.new(0, 373, 0, 93)
+				Information.Size = UDim2.new(0, 350, 0, 65)
 
 				InformationCorner.CornerRadius = UDim.new(0, 8)
 				InformationCorner.Name = "InformationCorner"
@@ -1317,27 +1316,31 @@ function Library:Window()
 
 				InformationTitle.Name = "InformationTitle"
 				InformationTitle.Parent = Information
-				InformationTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				InformationTitle.BackgroundTransparency = 1.000
-				InformationTitle.Position = UDim2.new(0.227882043, 0, 0, 0)
-				InformationTitle.Size = UDim2.new(0, 200, 0, 28)
+				InformationTitle.BackgroundTransparency = 1
+				InformationTitle.Size = UDim2.new(1, 0, 0, 24)
+				InformationTitle.Position = UDim2.new(0, 0, 0, 4)
 				InformationTitle.Font = Enum.Font.GothamBold
 				InformationTitle.Text = title
 				InformationTitle.TextColor3 = Color3.fromRGB(200, 200, 255)
-				InformationTitle.TextSize = 13
+				InformationTitle.TextSize = 14
+				InformationTitle.TextScaled = false
+				InformationTitle.TextWrapped = true
+				InformationTitle.TextXAlignment = Enum.TextXAlignment.Center
 
 				InformationDesc.Name = "InformationDesc"
 				InformationDesc.Parent = Information
-				InformationDesc.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				InformationDesc.BackgroundTransparency = 1.000
-				InformationDesc.Position = UDim2.new(0.0468211658, 0, 0.387096763, 0)
-				InformationDesc.Size = UDim2.new(0, 334, 0, 52)
-				InformationDesc.Font = Enum.Font.GothamBold
+				InformationDesc.BackgroundTransparency = 1
+				InformationDesc.Size = UDim2.new(1, -20, 0, 30)
+				InformationDesc.Position = UDim2.new(0, 10, 0, 30)
+				InformationDesc.Font = Enum.Font.Gotham
 				InformationDesc.Text = desc
 				InformationDesc.TextColor3 = Color3.fromRGB(180, 180, 255)
 				InformationDesc.TextSize = 13
+				InformationDesc.TextWrapped = true
+				InformationDesc.TextXAlignment = Enum.TextXAlignment.Center
+				InformationDesc.TextYAlignment = Enum.TextYAlignment.Top
 
-				Section.Size = Section.Size + UDim2.new(0, 0, 0, 93 + 5)
+				Section.Size = Section.Size + UDim2.new(0, 0, 0, 65 + 5)
 				Page.CanvasSize = UDim2.new(0, 0, 0, PageList.AbsoluteContentSize.Y)
 
 				local config = {}
