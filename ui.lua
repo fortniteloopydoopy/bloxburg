@@ -1642,40 +1642,4 @@ function Library:Window()
 	end
 	return Window
 end
-
-local win = Library:Window()
-
-local autofarm = win:Tab("Auto Farm")
-
-local autobuild = win:Tab("Auto Build")
-
-local cook = win:Tab("Auto Cook")
-
-local skill = win:Tab("Skill and Mood")
-
-local veh = win:Tab("Vehicle")
-
-local misc = win:Tab("Misc")
-
-local settings = win:Tab("Settings")
-
-local sectin = settings:Section("Settings")
-sectin:Slider("Drag Speed", 0, 20, 14, function(value)
-	print(value)
-end)
-
-sectin:Button("Teleport to House", function()
-	local resp = Library:Prompt("Fake Message Box", "Are you sure?", {
-		Positive = "Yes",
-		Negative = "No",
-	})
-
-	print(resp)
-end)
-
-sectin:Textbox("Amount", "cash amount", function(v) end)
-
-sectin:Toggle("Quit Shift at Amount", false, function(state) end)
-
-sectin:MultiSelect("Select Drone Number", { 1, 2, 3, 4 }, function(v, state) end)
-sectin:Dropdown("HI", { 1, 2, 3, 4, 5 }, function(v) end)
+return Library, Library.settings
