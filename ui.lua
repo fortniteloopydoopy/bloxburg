@@ -954,12 +954,15 @@ function Library:Window()
 				local DropdownAbove = Instance.new("Frame")
 				local DropdownText = Instance.new("TextLabel")
 				local DropdownValue = Instance.new("TextBox")
-				local DropdownValueScale = Instance.new("UITextSizeConstraint")
 				local DropdownList = Instance.new("ScrollingFrame")
 				local DropdownListLayout = Instance.new("UIListLayout")
 
-				local count = 0
-				local size = 0
+				local maxVisibleItems = 3
+				local itemHeight = 40
+				local dropdownPadding = 5
+
+				local isOpen = false
+				local currentSize = 0
 
 				Dropdown.Name = "Dropdown"
 				Dropdown.Parent = Section
@@ -972,14 +975,14 @@ function Library:Window()
 
 				DropdownAbove.Name = "DropdownAbove"
 				DropdownAbove.Parent = Dropdown
-				DropdownAbove.BackgroundTransparency = 1.000
-				DropdownAbove.Size = UDim2.new(0, 373, 0, 42)
+				DropdownAbove.BackgroundTransparency = 1
+				DropdownAbove.Size = UDim2.new(1, 0, 0, 42)
 
 				DropdownText.Name = "DropdownText"
 				DropdownText.Parent = DropdownAbove
-				DropdownText.BackgroundTransparency = 1.000
-				DropdownText.Position = UDim2.new(0.042, 0, 0.13, 0)
-				DropdownText.Size = UDim2.new(0, 169, 0, 30)
+				DropdownText.BackgroundTransparency = 1
+				DropdownText.Position = UDim2.new(0.03, 0, 0.1, 0)
+				DropdownText.Size = UDim2.new(0.5, 0, 0.8, 0)
 				DropdownText.Font = Enum.Font.GothamBold
 				DropdownText.Text = dropname
 				DropdownText.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -989,168 +992,122 @@ function Library:Window()
 				DropdownValue.Name = "DropdownValue"
 				DropdownValue.Parent = DropdownAbove
 				DropdownValue.BackgroundTransparency = 1
-				DropdownValue.Position = UDim2.new(0.517, 0, 0.17, 0)
-				DropdownValue.Size = UDim2.new(0, 166, 0, 30)
+				DropdownValue.Position = UDim2.new(0.5, 0, 0.1, 0)
+				DropdownValue.Size = UDim2.new(0.5, -10, 0.8, 0)
 				DropdownValue.Font = Enum.Font.GothamBold
+				DropdownValue.PlaceholderText = "..."
 				DropdownValue.PlaceholderColor3 = Color3.fromRGB(0, 170, 255)
-				DropdownValue.Text = "..."
+				DropdownValue.Text = ""
 				DropdownValue.TextColor3 = Color3.fromRGB(255, 255, 255)
-				DropdownValue.TextScaled = true
-				DropdownValue.TextSize = 15
-				DropdownValue.TextWrapped = true
+				DropdownValue.TextSize = 14
 				DropdownValue.TextXAlignment = Enum.TextXAlignment.Right
-
-				DropdownValueScale.Parent = DropdownValue
-				DropdownValueScale.MaxTextSize = 15
+				DropdownValue.ClearTextOnFocus = false
 
 				DropdownList.Name = "DropdownList"
 				DropdownList.Parent = Dropdown
-				DropdownList.Active = true
 				DropdownList.BackgroundTransparency = 1
-				DropdownList.BorderSizePixel = 0
 				DropdownList.Position = UDim2.new(0.018, 0, 0, 45)
 				DropdownList.Size = UDim2.new(0, 356, 0, 0)
 				DropdownList.ScrollBarThickness = 4
+				DropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
 
 				DropdownListLayout.Parent = DropdownList
-				DropdownListLayout.Padding = UDim.new(0, 1)
-				DropdownListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 				DropdownListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+				DropdownListLayout.Padding = UDim.new(0, 1)
 
-				local dropdownOpen = false
-				local IsFocused = false
-				local DidChoose = false
-
-				local function CollapseDropdown()
-					dropdownOpen = false
-					Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
-					Tween(Section, 0.3, { Size = Section.Size - UDim2.new(0, 0, 0, size + 5) })
-
-					for _, v in DropdownList:GetChildren() do
+				local function clearList()
+					for _, v in ipairs(DropdownList:GetChildren()) do
 						if v:IsA("TextButton") then
-							v.Visible = false
+							v:Destroy()
 						end
 					end
 				end
 
-				local function ExpandDropdown()
-					dropdownOpen = true
-					IsFocused = true
-
-					for _, v in DropdownList:GetChildren() do
-						if v:IsA("TextButton") then
-							v.Visible = true
+				local function populateList(filter)
+					clearList()
+					local filtered = {}
+					for _, item in ipairs(list) do
+						if not filter or string.find(item:lower(), filter:lower()) then
+							table.insert(filtered, item)
 						end
 					end
 
-					Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42 + size + 5) })
-					Tween(Section, 0.3, { Size = Section.Size + UDim2.new(0, 0, 0, size + 5) })
+					local visibleCount = math.min(#filtered, maxVisibleItems)
+					currentSize = visibleCount * (itemHeight + DropdownListLayout.Padding.Offset)
+
+					DropdownList.Size = UDim2.new(0, 356, 0, currentSize)
+					DropdownList.CanvasSize =
+						UDim2.new(0, 0, 0, #filtered * (itemHeight + DropdownListLayout.Padding.Offset))
+
+					for _, v in ipairs(filtered) do
+						local Item = Instance.new("TextButton")
+						local ItemCorner = Instance.new("UICorner")
+
+						Item.Name = "Item"
+						Item.Parent = DropdownList
+						Item.Size = UDim2.new(1, 0, 0, itemHeight)
+						Item.BackgroundColor3 = Color3.fromRGB(3, 112, 166)
+						Item.AutoButtonColor = false
+						Item.Font = Enum.Font.GothamBold
+						Item.Text = v
+						Item.TextColor3 = Color3.fromRGB(255, 255, 255)
+						Item.TextSize = 12
+
+						ItemCorner.CornerRadius = UDim.new(0, 8)
+						ItemCorner.Parent = Item
+
+						Item.MouseEnter:Connect(function()
+							Tween(Item, 0.1, { BackgroundColor3 = Color3.fromRGB(0, 170, 255) })
+						end)
+						Item.MouseLeave:Connect(function()
+							Tween(Item, 0.1, { BackgroundColor3 = Color3.fromRGB(3, 112, 166) })
+						end)
+
+						Item.MouseButton1Click:Connect(function()
+							DropdownValue.Text = v
+							callback(v)
+							isOpen = false
+							Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
+						end)
+					end
 				end
 
-				DropdownValue.Focused:Connect(ExpandDropdown)
+				DropdownValue.Focused:Connect(function()
+					if isOpen then
+						return
+					end
+					isOpen = true
+					populateList()
+					Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42 + currentSize + dropdownPadding) })
+				end)
 
 				DropdownValue.FocusLost:Connect(function()
-					if DidChoose then
-						return
+					if isOpen then
+						isOpen = false
+						Tween(Dropdown, 0.3, { Size = UDim2.new(0, 373, 0, 42) })
 					end
-					if not dropdownOpen then
-						return
-					end
-					IsFocused = false
-					CollapseDropdown()
 				end)
 
 				DropdownValue:GetPropertyChangedSignal("Text"):Connect(function()
-					local input = string.lower(DropdownValue.Text)
-					for _, v in DropdownList:GetChildren() do
-						if v:IsA("TextButton") then
-							v.Visible = (input == "") or string.find(string.lower(v.Text), input)
-						end
+					if isOpen then
+						populateList(DropdownValue.Text)
 					end
 				end)
 
-				local function AddItem(v)
-					local Item = Instance.new("TextButton")
-					local ItemCorner = Instance.new("UICorner")
-
-					Item.Name = "Item"
-					Item.Parent = DropdownList
-					Item.BackgroundColor3 = Color3.fromRGB(3, 112, 166)
-					Item.Size = UDim2.new(0, 356, 0, 40)
-					Item.AutoButtonColor = false
-					Item.Font = Enum.Font.GothamBold
-					Item.Text = v
-					Item.TextColor3 = Color3.fromRGB(255, 255, 255)
-					Item.TextSize = 12
-
-					ItemCorner.CornerRadius = UDim.new(0, 8)
-					ItemCorner.Parent = Item
-
-					Item.MouseEnter:Connect(function()
-						Tween(Item, 0.1, { BackgroundColor3 = Color3.fromRGB(0, 170, 255) })
-					end)
-					Item.MouseLeave:Connect(function()
-						Tween(Item, 0.1, { BackgroundColor3 = Color3.fromRGB(3, 112, 166) })
-					end)
-
-					Item.MouseButton1Click:Connect(function()
-						if DidChoose then
-							return
-						end
-						DidChoose = true
-						DropdownValue.Text = v
-						task.spawn(function()
-							callback(v)
-						end)
-						CollapseDropdown()
-						task.delay(0.3, function()
-							DidChoose = false
-						end)
-					end)
-
-					if count < 3 then
-						size += 41
-						DropdownList.Size = DropdownList.Size + UDim2.new(0, 0, 0, 41)
-						count += 1
-					end
-
-					DropdownList.CanvasSize = UDim2.new(0, 0, 0, DropdownListLayout.AbsoluteContentSize.Y)
-				end
-
-				for _, v in ipairs(list) do
-					AddItem(v)
-				end
-
-				Section.Size = Section.Size + UDim2.new(0, 0, 0, 42 + 5)
+				-- Adjust section and page size
+				Section.Size = Section.Size + UDim2.new(0, 0, 0, 47)
 				Page.CanvasSize = UDim2.new(0, 0, 0, PageList.AbsoluteContentSize.Y)
 
 				local config = {}
 
 				function config:Update(newList)
-					-- Reset
-					for _, v in DropdownList:GetChildren() do
-						if v:IsA("TextButton") then
-							v:Destroy()
-						end
-					end
-
-					DropdownList.Size = UDim2.new(0, 356, 0, 0)
-					count = 0
-					size = 0
-
-					if dropdownOpen then
-						CollapseDropdown()
-					end
-
-					for _, v in ipairs(newList) do
-						AddItem(v)
-					end
+					list = newList
+					populateList()
 				end
 
 				return config
 			end
 
-			--// info container
 			function Container:Information(title, desc)
 				local Information = Instance.new("Frame")
 				local InformationCorner = Instance.new("UICorner")
