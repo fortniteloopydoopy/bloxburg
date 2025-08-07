@@ -1232,7 +1232,7 @@ function Library:Window()
 
 						Item.Name = "Item"
 						Item.Parent = DropdownList
-						Item.BackgroundColor3 = Color3.fromRGB(50, 60, 100)
+						Item.BackgroundColor3 = Color3.fromRGB(3, 112, 166)
 						Item.Size = UDim2.new(0, 356, 0, 40)
 						Item.AutoButtonColor = false
 						Item.Font = Enum.Font.GothamBold
@@ -1245,10 +1245,10 @@ function Library:Window()
 						ItemCorner.Parent = Item
 
 						Item.MouseEnter:Connect(function()
-							Tween(Item, 0.1, { BackgroundColor3 = Color3.fromRGB(60, 70, 120) })
+							Tween(Item, 0.1, { BackgroundColor3 = Color3.fromRGB(0, 170, 255) })
 						end)
 						Item.MouseLeave:Connect(function()
-							Tween(Item, 0.1, { BackgroundColor3 = Color3.fromRGB(50, 60, 100) })
+							Tween(Item, 0.1, { BackgroundColor3 = Color3.fromRGB(3, 112, 166) })
 						end)
 
 						Item.MouseButton1Click:Connect(function()
